@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Crop Disease Detector</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 30px; max-width: 600px; margin: auto; }
+        .result { border: 1px solid #ccc; padding: 20px; margin-top: 20px; border-radius: 8px; }
+    </style>
+</head>
+<body>
+    <h1>🌿 Crop Disease Detector</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" name="file" accept="image/*" required>
+        <button type="submit">Analyze</button>
+    </form>
+
+    <div id="result" class="result" style="display: none;">
+        <h3>Prediction Result:</h3>
+        <p><strong>Disease:</strong> <span id="disease"></span></p>
+        <p><strong>Confidence:</strong> <span id="confidence"></span>%</p>
+        <p><strong>Treatment:</strong> <span id="treatment"></span></p>
+    </div>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const formData = new FormData();
+            formData.append('file', this.file.files[0]);
+
+            const res = await fetch('/predict', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await res.json();
+
+            document.getElementById('disease').textContent = data.disease;
+            document.getElementById('confidence').textContent = data.confidence;
+            document.getElementById('treatment').textContent = data.treatment;
+            document.getElementById('result').style.display = 'block';
+        });
+    </script>
+</body>
+</html>
